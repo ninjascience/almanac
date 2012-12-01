@@ -1,0 +1,11 @@
+temp
+dist
+.DS_STORE
+.sass-cache/
+components/
+package.json
+test/
+*.iml
+*.ipr
+*.iws
+
