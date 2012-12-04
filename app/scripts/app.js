@@ -1,11 +1,19 @@
 define(['d3'], function(d3) {
+    "use strict";
 
+    var days = [],
+        months = [],
+        today = new Date(),
+        currentDay = new Date(today.getFullYear(), 0, 1);
 
-
-    var daysInYear = 365,
-        random = d3.random.normal(6, 1),
-        days = d3.range(daysInYear).map(random),
-        months = d3.range(12);
+    while (currentDay.getFullYear() === today.getFullYear()){
+        var thisDay = new Date(currentDay.getFullYear(), currentDay.getMonth(), currentDay.getDate());
+        currentDay.setDate(currentDay.getDate()+1);
+        days.push({date:thisDay});
+        if(thisDay.getMonth() !== currentDay.getMonth()) {
+            months.push({month: thisDay.getMonth(), days: thisDay.getDate()});
+        }
+    }
 
     var angles = [-180, 180];
 
@@ -15,11 +23,11 @@ define(['d3'], function(d3) {
 
     // create scale for arc angle and days of year
     var daysArc = d3.scale.linear()
-        .domain([0, daysInYear - 1])
+        .domain([0, days.length - 1])
         .range(angles);
 
     var monthsArc = d3.scale.linear()
-        .domain([0, 11])
+        .domain([0, months.length-1])
         .range(angles);
 
     var body = $('body');
@@ -37,7 +45,7 @@ define(['d3'], function(d3) {
         .attr("transform", function (d, i) {
             return "rotate(" + daysArc(i) +
                 ")translate(" + 300 + ")";
-        }).append('rect').attr('fill', "#000").attr('width', function(d){return d;}).attr('height', 3);
+        }).append('circle').attr('fill', "#333").attr('r', 1.5);
 
     var arc = d3.svg.arc()
         .innerRadius(274)
@@ -57,5 +65,5 @@ define(['d3'], function(d3) {
         .enter().append('g').attr('class', 'month')
         .attr("transform", function (d, i) {
             return "translate(" + 0 + ")rotate(180)";
-        }).append('path').attr('d', arc);
+        }).append('path').attr('d', arc).fill('#333');
 });
