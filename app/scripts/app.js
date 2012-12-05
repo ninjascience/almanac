@@ -12,8 +12,8 @@ define(['d3'], function(d3) {
         days.push({date:thisDay});
         if(thisDay.getMonth() !== currentDay.getMonth()) {
             months.push({
-                startDate: new Date(today.getFullYear(), thisDay.getMonth(), 1),
-                endDate: new Date(today.getFullYear(), thisDay.getMonth(), thisDay.getDate())
+                start: new Date(today.getFullYear(), thisDay.getMonth(), 1),
+                end: new Date(today.getFullYear(), thisDay.getMonth(), thisDay.getDate())
             });
         }
     }
@@ -55,12 +55,12 @@ define(['d3'], function(d3) {
         .innerRadius(274)
         .outerRadius(275)
         .startAngle(function(d){
-            var degrees = yearArc(d.startDate);
+            var degrees = yearArc(d.start);
             var r = radians(degrees);
             return r;
         })
         .endAngle(function(d,i){
-            var degrees = yearArc(d.endDate);
+            var degrees = yearArc(d.end);
             if (i === 11) {
                 degrees -= 1;
             }
@@ -68,13 +68,31 @@ define(['d3'], function(d3) {
             return r;
         });
 
+
+    var seasonArc = d3.svg.arc()
+        .innerRadius(249)
+        .outerRadius(250)
+        .startAngle(function(d){
+            var degrees = yearArc(d.start);
+            var r = radians(degrees);
+            return r;
+        })
+        .endAngle(function(d,i){
+            var degrees = yearArc(d.end);
+            if (i === 11) {
+                degrees -= 1;
+            }
+            var r = radians(degrees-1);
+            return r;
+        });
+
     g.selectAll("g.month").data(months)
         .enter().append('g').attr('class', 'month')
-        .attr("transform", function (d, i) {
-            return "translate(" + 0 + ")rotate(180)";
-        }).append('path').attr('d', monthArc).attr('fill', '#333');
+        .append('path').attr('d', monthArc).attr('fill', '#333');
 
     d3.json('data/97008_events.json', function(result) {
-        //g.selectAll
+        g.selectAll('g.season').data(result.seasons)
+            .enter().append('g').attr('class', 'season')
+            .append('path').attr('d', seasonArc).attr('fill', '#333');
     });
 });
