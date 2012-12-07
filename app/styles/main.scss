@@ -3,3 +3,22 @@
 path{
   shape-rendering:geometricPrecision;
 }
+
+g.day text {
+  font-size: 5pt;
+}
+
+g.day text.Sunday, g.day text.Saturday {
+  fill: #F90;
+}
+
+g.month rect, g.season rect {
+  fill: #666;
+  stroke-width: 0;
+}
+
+g.axis circle {
+  stroke: #999;
+  fill-opacity: 0;
+}
+
