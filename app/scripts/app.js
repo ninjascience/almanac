@@ -3,14 +3,29 @@ define(['d3'], function(d3) {
 
     var body = $('body');
 
-    var outerRadius = 400,
-        padding = 10,
+    var padding = 10,
         innerRadius = 300,
         seasonsWidth = 50,
         monthsWidth = 50,
         precipWidth = 50,
-        tempWidth = 100;
+        tempWidth = 100,
+        frostWidth = 10;
 
+    // Days of the Week mapped to integers
+    var daysOfWeek = d3.scale.ordinal()
+        .domain([0, 1, 2, 3, 4, 5, 6])
+        .range(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
+
+    var angles = [0, 360];
+
+    var radians = function(degrees) {
+        console.log('radians: ' + degrees * (Math.PI/180));
+        return degrees * (Math.PI/180);
+    };
+
+//    var radians = d3.scale.linear()
+//        .domain(angles)
+//        .range([-Math.PI, Math.PI]);
 
     var days = [],
         months = [],
@@ -42,16 +57,10 @@ define(['d3'], function(d3) {
         }
     }
 
-    // Days of the Week mapped to integers
-    var daysOfWeek = d3.scale.ordinal()
-        .domain([0, 1, 2, 3, 4, 5, 6])
-        .range(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
-
-    var angles = [-180, 180];
-
+    var millisecondsInDay = 1000 * 60 * 60 * 24;
     // create scale for arc angle and epoch time
     var yearArc = d3.scale.linear()
-        .domain([days[0].date.getTime(), days[days.length-1].date.getTime()])
+        .domain([days[0].date.getTime(), days[days.length-1].date.getTime()+millisecondsInDay])
         .range(angles);
 
     draw();
@@ -167,6 +176,28 @@ define(['d3'], function(d3) {
             .append('circle').attr('r', innerTempRadius + tempScale(100));
 
         // TODO: frost marks
-
+        var innerFrostRadius = innerTempRadius + tempWidth + padding;
+        var startAngle = yearArc(events.frosts.start);
+        var endAngle = yearArc(events.frosts.end);
+        var diffAngle = (360 - startAngle) + endAngle;
+        console.log(startAngle);
+        console.log(endAngle);
+        console.log(diffAngle);
+        var frostArc = d3.svg.arc()
+            .innerRadius(innerFrostRadius)
+            .outerRadius(innerFrostRadius + frostWidth)
+            .startAngle(0)
+            .endAngle(radians(diffAngle));
+        g.append('g').attr('class', 'frost')
+            .append('path').attr('d', frostArc())
+            .attr("transform", "rotate(" + (-yearArc(events.frosts.start)) + ")");
+        g.append('g').attr('class', 'frosts')
+            .append('circle').attr('r', 6)
+            .attr("transform", "rotate(" + (yearArc(events.frosts.start)) + ")" +
+                    "translate(" + (innerFrostRadius + 20) + ")");
+        g.append('g').attr('class', 'frosts')
+            .append('circle').attr('r', 6)
+            .attr("transform", "rotate(" + (yearArc(events.frosts.end)) + ")" +
+                "translate(" + (innerFrostRadius + 20) + ")");
     }
 });
