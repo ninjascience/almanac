@@ -4,7 +4,7 @@ path{
   shape-rendering:geometricPrecision;
 }
 
-g.day text {
+g.day text, g.moon text {
   font-size: 5pt;
 }
 
@@ -20,5 +20,21 @@ g.month rect, g.season rect {
 g.axis circle {
   stroke: #999;
   fill-opacity: 0;
+}
+
+path.full_moon {
+  fill: #FFF;
+  stroke: #000;
+}
+
+path.new_moon {
+  fill: #000;
+  stroke: #000;
+}
+
+
+path.first_quarter, path.last_quarter {
+  fill: #FFF;
+  stroke: #FFF;
 }
 
