@@ -1,11 +1,23 @@
 @import "compass_twitter_bootstrap";
 
+b {
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+
 path{
   shape-rendering:geometricPrecision;
 }
 
 g.day text, g.moon text {
   font-size: 5pt;
+}
+
+text.monthLabel {
+ font-size: 21pt;
+}
+
+text.seasonLabel {
+  font-size: 21pt;
 }
 
 g.day text.Sunday, g.day text.Saturday {

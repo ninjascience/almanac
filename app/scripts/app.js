@@ -107,6 +107,18 @@ define(['d3','underscore'], function(d3,_) {
                 return "rotate(" + yearArc(d.start) + ")" +
                     "translate(" + (innerRadius) + ")";
             });
+        g.selectAll("g.season")
+            .append('text').text(function(d) {
+                return d.name;
+            })
+            .attr('class', 'seasonLabel')
+            .attr("text-anchor", "middle")
+            .attr("transform", function (d, i) {
+
+                return "rotate("
+                    + (yearArc(d.start + ((d.end - d.start) / 2))) + ")" +
+                    "translate(" + (innerRadius+padding) + ")rotate(90)";
+            });
 
         // month marks
         var monthsInnerRadius = innerRadius + seasonsWidth;
@@ -119,12 +131,16 @@ define(['d3','underscore'], function(d3,_) {
                 return "rotate(" + yearArc(d.start.getTime()) + ")" +
                     "translate(" + (monthsInnerRadius) + ")";
             });
-        g.selectAll("g.month").append('text').text(function(d) {
+        g.selectAll("g.month")
+            .append('text').text(function(d) {
                 return d.start.getMonth()+1;
             })
+            .attr('class', 'monthLabel')
+            .attr("text-anchor", "middle")
             .attr("transform", function (d, i) {
-                return "rotate(" + (yearArc(d.start.getTime()+(millisecondsInDay*15))) + ")" +
-                    "translate(" + (monthsInnerRadius+(monthsWidth/2)) + ")";
+                return "rotate("
+                        + (yearArc(d.start.getTime() + ((d.end.getTime()- d.start.getTime()) / 2))) + ")" +
+                    "translate(" + (monthsInnerRadius+padding) + ")rotate(90)";
             });
         g.append('g').attr('class','axis')
             .append('circle').attr('r', monthsInnerRadius+monthsWidth);
@@ -148,13 +164,14 @@ define(['d3','underscore'], function(d3,_) {
         g.append("g").attr('class', 'days').selectAll("g.day").data(days)
             .enter().append('g').attr('class', 'day')
             .attr("transform", function (d, i) {
-                return "rotate(" + (yearArc(d.date.getTime()+millisecondsInDay)) + ")" +
+                return "rotate(" + (yearArc(d.date.getTime())) + ")" +
                     "translate(" + daysInnerRadius + ")";
 
             })
             .append('text').text(function(d){
                 return d.date.getDate();
             })
+            .attr('baseline-shift', '-100%')
             .attr('class', function(d){
                 return daysOfWeek(d.date.getDay());
             });
