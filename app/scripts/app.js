@@ -193,6 +193,53 @@ define(['d3','underscore'], function(d3,_) {
                     "translate(" + (precipInnerRadius) + ")";
             });
 
+
+        // frost marks
+        var innerTempRadius = precipInnerRadius + precipWidth + padding;
+        var innerFrostRadius = innerTempRadius;
+
+        var frostTime = events.frosts.end - events.frosts.start;
+        var frostAngle = daysArc(frostTime);
+        var growAngle = 360 - frostAngle;
+
+        var frostArc = d3.svg.arc()
+            .innerRadius(innerFrostRadius)
+            .outerRadius(innerFrostRadius + 2)
+            .startAngle(0)
+            .endAngle(radians(frostAngle));
+
+        var growArc = d3.svg.arc()
+            .innerRadius(innerFrostRadius)
+            .outerRadius(innerFrostRadius + 2)
+            .startAngle(0)
+            .endAngle(radians(growAngle));
+
+
+//        g.append('g').attr('class', 'frost')
+//            .append('path').attr('d', frostArc())
+//            .attr("transform", "rotate(" + (-yearArc(events.frosts.start)) + ")");
+
+        g.append('defs')
+            .append('path')
+            .attr('id', 'growArc').attr('class', 'grow')
+            .attr('d', growArc())
+            .attr("transform", "rotate(" + (-yearArc(events.frosts.start)+frostAngle) + ")");
+
+        //g.append('use').attr('href', '#growArc');
+
+        g.append('g').attr('class', 'grow')
+            .append('path').attr('d', growArc())
+            .attr("transform", "rotate(" + (-yearArc(events.frosts.start)+frostAngle) + ")");
+
+
+        g.append('g').attr('class', 'frostLabel')
+            .append('text')
+            .append('textPath')
+            .attr('xlink:href', '#growArc')
+            .attr('baseline-shift', '2')
+            .text('Growing Season ⇾');
+
+
         // temperature marks
         var maxTemp = d3.max(stats, function(d){
             return d['TMAX-MAX'];
@@ -206,7 +253,6 @@ define(['d3','underscore'], function(d3,_) {
             .domain([0, maxTemp-minTemp])
             .range([0,tempWidth]);
 
-        var innerTempRadius = precipInnerRadius + precipWidth + padding;
 
         g.append("g").attr('class', 'temps').selectAll("g.temp").data(stats)
             .enter().append('g').attr('class', 'temp')
@@ -219,32 +265,16 @@ define(['d3','underscore'], function(d3,_) {
                     "translate(" + (innerTempRadius + tempScale(d.TMIN)) + ")";
             });
 
-        g.append('g').attr('class','axis')
-            .append('circle').attr('r', innerTempRadius);
-
-
-        g.append('g').attr('class','axis')
-            .append('circle').attr('r', innerTempRadius + tempScale(50));
-
+//        g.append('g').attr('class','axis')
+//            .append('circle').attr('r', innerTempRadius);
 
         g.append('g').attr('class','axis')
-            .append('circle').attr('r', innerTempRadius + tempScale(100));
+            .append('circle').attr('r', innerTempRadius + tempScale(32));
 
-        // frost marks
-        var innerFrostRadius = innerTempRadius + tempWidth + padding;
+//
+//        g.append('g').attr('class','axis')
+//            .append('circle').attr('r', innerTempRadius + tempScale(100));
 
-        var frostTime = events.frosts.end - events.frosts.start;
-        var frostAngle = daysArc(frostTime);
-
-        var frostArc = d3.svg.arc()
-            .innerRadius(innerFrostRadius)
-            .outerRadius(innerFrostRadius + frostWidth)
-            .startAngle(0)
-            .endAngle(radians(frostAngle));
-
-        g.append('g').attr('class', 'frost')
-            .append('path').attr('d', frostArc())
-            .attr("transform", "rotate(" + (-yearArc(events.frosts.start)) + ")");
 
     }
 });

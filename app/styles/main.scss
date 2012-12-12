@@ -8,6 +8,15 @@ path{
   shape-rendering:geometricPrecision;
 }
 
+g.frost path {
+  fill: #EEE;
+}
+
+g.grow path {
+  fill: #999;
+  fill-opacity: .5;
+}
+
 g.day text, g.moon text {
   font-size: 5pt;
 }
