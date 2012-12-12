@@ -1,6 +1,24 @@
 define(['d3','underscore'], function(d3,_) {
     "use strict";
 
+
+    var tempColors = [
+                        0xE2A2D7,
+                        0xBFACE3,
+                        0x96B5E5,
+                        0x6CBCDD,
+                        0x49C0CC,
+                        0x3CC1B4,
+                        0x4DC098,
+                        0x68BD7C,
+                        0x85B862,
+                        0xA1B04F,
+                        0xBBA746,
+                        0xD19C48,
+                        0xE39054,
+                        0xED8667
+                     ];
+
     var body = $('body');
 
     var padding = 10,
@@ -210,7 +228,7 @@ define(['d3','underscore'], function(d3,_) {
 
         var growArc = d3.svg.arc()
             .innerRadius(innerFrostRadius)
-            .outerRadius(innerFrostRadius + 2)
+            .outerRadius(innerFrostRadius + 1)
             .startAngle(0)
             .endAngle(radians(growAngle));
 
