@@ -8,5 +8,5 @@ test/
 *.iml
 *.ipr
 *.iws
-data/~*
+npm-debug.log
 
