@@ -26,6 +26,37 @@ text.monthLabel {
  font-size: 21pt;
 }
 
+g.monthArc path {
+  fill: #EEE;
+  stroke: #FFF;
+}
+
+path.seasonArc {
+  fill: #FFF;
+  stroke: #FFF;
+}
+/*
+#6EF9BC
+#9CE785
+#C5D25E
+#E5B851
+*/
+path#Summer {
+  fill: #C5D25E;
+}
+
+path#Spring {
+  fill: #9CE785;
+}
+
+path#Fall {
+  fill: #E5B851;
+}
+
+path#Winter {
+  fill: #6EF9BC;
+}
+
 text.seasonLabel {
   font-size: 21pt;
 }
@@ -66,4 +97,14 @@ path.first_quarter, path.last_quarter {
   left: 5px;
   width: 315px;
 }
+
+g.precip rect {
+  fill: #3B8B99;
+}
+
+
+g.snow rect {
+  fill: #65DAF4;
+}
+
 

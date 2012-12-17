@@ -165,40 +165,71 @@ define(['d3','underscore'], function(d3,_) {
             .append("g").attr("transform", "rotate(-90)scale(1)");
 
         // season mark
-        g.append('g').attr('class','axis')
-            .append('circle').attr('r', innerRadius);
-        g.selectAll("g.season").data(events.seasons)
-            .enter().append('g').attr('class', 'season')
-            .append('rect').attr('width', seasonsWidth).attr('height', 1)
-            .attr("transform", function (d, i) {
-                return "rotate(" + yearArc(d.start) + ")" +
-                    "translate(" + (innerRadius) + ")";
-            });
-        g.selectAll("g.season")
-            .append('text').text(function(d) {
+        g.append('defs').selectAll('path.seasonArc').data(events.seasons)
+            .enter().append('path')
+            .attr('class', 'seasonArc')
+            .attr('id', function(d){
                 return d.name;
             })
+            .attr('d', d3.svg.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(innerRadius)
+                .startAngle(function(d){
+                    return radians(yearArc(d.start)+90);
+                })
+                .endAngle(function(d){
+                    return radians(yearArc(d.end)+90);
+                }));
+        g.append('g').selectAll('path.seasonArc').data(events.seasons)
+            .enter().append('path')
+            .attr('class', 'seasonArc')
+            .attr('id', function(d){
+                return d.name;
+            })
+            .attr('d', d3.svg.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(innerRadius+seasonsWidth)
+                .startAngle(function(d){
+                    return radians(yearArc(d.start)+90);
+                })
+                .endAngle(function(d){
+                    return radians(yearArc(d.end)+90);
+                }));
+        g.append('g').selectAll("text.seasonLabel")
+            .data(events.seasons)
+            .enter().append('text')
             .attr('class', 'seasonLabel')
             .attr("text-anchor", "middle")
+            .append('textPath')
+            .attr('startOffset', '25%')
+            .attr('baseline-shift', '50%')
+            .attr('xlink:href', function(d){
+                return '#' + d.name;
+            })
             .attr("transform", function (d, i) {
 
                 return "rotate("
                     + (yearArc(d.start + ((d.end - d.start) / 2))) + ")" +
                     "translate(" + (innerRadius+padding) + ")rotate(90)";
+            })
+            .text(function(d) {
+                return d.name;
             });
 
         // month marks
-        var monthsInnerRadius = innerRadius + seasonsWidth;
-        g.append('g').attr('class','axis')
-            .append('circle').attr('r', monthsInnerRadius);
-        g.selectAll("g.month").data(months)
-            .enter().append('g').attr('class', 'month')
-            .append('rect').attr('width', monthsWidth).attr('height', 1)
-            .attr("transform", function (d, i) {
-                return "rotate(" + yearArc(d.start.getTime()) + ")" +
-                    "translate(" + (monthsInnerRadius) + ")";
-            });
-        g.selectAll("g.month")
+        var monthsInnerRadius = innerRadius + seasonsWidth + padding;
+        g.append('g').selectAll('g.monthArc').data(months)
+            .enter().append('g').attr('class', 'monthArc')
+            .append('path').attr('d', d3.svg.arc()
+                .innerRadius(monthsInnerRadius)
+                .outerRadius(monthsInnerRadius+monthsWidth)
+                .startAngle(function(d){
+                    return radians(yearArc(d.start.getTime())+90);
+                })
+                .endAngle(function(d){
+                    return radians(yearArc(d.end.getTime()+millisecondsInDay)+90);
+                }));
+        g.selectAll("g.monthArc")
             .append('text').text(function(d) {
                 return d.start.getMonth()+1;
             })
@@ -209,8 +240,6 @@ define(['d3','underscore'], function(d3,_) {
                         + (yearArc(d.start.getTime() + ((d.end.getTime()- d.start.getTime()) / 2))) + ")" +
                     "translate(" + (monthsInnerRadius+padding) + ")rotate(90)";
             });
-        g.append('g').attr('class','axis')
-            .append('circle').attr('r', monthsInnerRadius+monthsWidth);
 
         // Moon marks
         var moonInnerRadius = monthsInnerRadius + monthsWidth + padding;
@@ -259,10 +288,20 @@ define(['d3','underscore'], function(d3,_) {
                 return "rotate(" + yearArc(date.getTime()) + ")" +
                     "translate(" + (precipInnerRadius) + ")";
             });
+        g.append("g").attr('class', 'snows').selectAll("g.snow").data(stats)
+            .enter().append('g').attr('class', 'snow')
+            .append('rect')
+            .attr('width', function(d){ return precipScale(d.SNOW);})
+            .attr('height', 4)
+            .attr("transform", function (d, i) {
+                var date = new Date(today.getFullYear(), d.MO, d.DY);
+                return "rotate(" + yearArc(date.getTime()) + ")" +
+                    "translate(" + (precipScale(d.PRECIP) + precipInnerRadius) + ")";
+            });
 
 
         // frost marks
-        var innerTempRadius = precipInnerRadius + precipWidth + padding;
+        var innerTempRadius = precipInnerRadius + precipWidth + padding + padding;
         var innerFrostRadius = innerTempRadius;
 
         var frostTime = events.frosts.end - events.frosts.start;
