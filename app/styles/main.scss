@@ -9,56 +9,53 @@ path{
   shape-rendering:geometricPrecision;
 }
 
-g.frost path {
-  fill: #EEE;
+g.grow path {
+  fill: #82b966;
+  stroke-opacity: 0;
 }
 
-g.grow path {
-  fill: #999;
-  fill-opacity: .5;
+g.frostLabel text {
+  font-size: 16pt;
+  fill: #82b966;
 }
 
 g.day text, g.moon text {
-  font-size: 5pt;
+  font-size: 4.5pt;
+  font-family: Helvetica;
 }
 
 text.monthLabel {
- font-size: 21pt;
+ font-size: 15pt;
 }
 
 g.monthArc path {
-  fill: #EEE;
-  stroke: #FFF;
+  fill: #fff;
+  stroke: #E9E9E9;
 }
 
 path.seasonArc {
   fill: #FFF;
   stroke: #FFF;
 }
-/*
-#6EF9BC
-#9CE785
-#C5D25E
-#E5B851
-*/
+
 path#Summer {
-  fill: #C5D25E;
+  fill: #F9B5B5;
 }
 
 path#Spring {
-  fill: #9CE785;
+  fill: #D0FFB8;
 }
 
 path#Fall {
-  fill: #E5B851;
+  fill: #FAE2B7;
 }
 
 path#Winter {
-  fill: #6EF9BC;
+  fill: #BAD7FD;
 }
 
 text.seasonLabel {
-  font-size: 21pt;
+  font-size: 15pt;
 }
 
 g.day text.Sunday, g.day text.Saturday {
