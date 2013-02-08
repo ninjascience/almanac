@@ -258,6 +258,9 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
         g.append('g').selectAll("text.seasonLabel")
             .data(events.seasons)
             .enter().append('text')
+            .attr('id', function(d){
+                return d.name + 'Label';
+            })
             .attr('class', 'seasonLabel')
             .attr("text-anchor", "middle")
             .append('textPath')
@@ -324,10 +327,8 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
                     "translate(" + daysInnerRadius + ")";
 
             })
-            .append('text').text(function(d){
-                return d.date.getDate();
-            })
-            .attr('baseline-shift', '-100%')
+            .append('circle')
+            .attr('r', '2')
             .attr('class', function(d){
                 return daysOfWeek(d.date.getDay());
             });
@@ -461,6 +462,25 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
                 .startAngle(0)
                 .endAngle(360));
 
+        // day mouseover marks
+        g.append("g").attr('class', 'mouseDays').selectAll("g.mouseDay").data(days)
+            .enter().append('g').attr('class', 'mouseDay')
+            .append('path')
+            .attr('data-day', function(d, i){
+                return i;
+            })
+            .attr('d', d3.svg.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(innerTempRadius+tempWidth)
+                .startAngle(function(d){
+                    return radians(yearArc(d.date.getTime())+90);
+                })
+                .endAngle(function(d){
+                    return radians(yearArc(d.date.getTime()+millisecondsInDay)+90);
+                }));
+
+
+
         var diameter = (innerTempRadius + tempWidth) * 2;
 
         var r = d3.scale.linear()
@@ -469,6 +489,37 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
 
 
         d3.select('#offsetContainer').attr("transform", "translate(" + body.outerWidth()/2 + "," + (diameter/2) + ")");
+
+        var dayDetail = g.append('g').attr('id', 'selectedDay').attr('transform', 'rotate(90)');
+
+        var selectedDay = 0;
+        var drawDay = function() {
+            dayDetail.selectAll('g.selectedDate').remove();
+            dayDetail.selectAll('g.selectedDate').data([days[selectedDay]]).enter()
+                .append('g').attr('class', 'selectedDate')
+                .attr('transform', 'translate(-45,-60)')
+                .attr('style', 'font-size:60pt')
+                .append('text').text(function(d){
+                    return (d.date.getMonth()+1) + '.' + d.date.getDate() + '.' + d.date.getFullYear();
+                });
+
+            dayDetail.selectAll('g.avgTemps').data([stats[selectedDay]]).enter()
+                .append('g').attr('class', 'avgTemps')
+                .attr('style', 'font-size:40pt')
+                .append('text').text(function(d){
+                    return d['TMIN'] + '/' + d['TMAX'];
+                });
+
+            dayDetail.selectAll('g.minMaxTemps').data([stats[selectedDay]]).enter()
+                .append('g').attr('class', 'minMaxTemps')
+                .attr('style', 'font-size:20pt')
+                .attr('transform', 'translate(0,25)')
+                .append('text').text(function(d){
+                    return d['TMIN-MIN'] + '/' + d['TMAX-MAX'];
+                });
+        };
+
+        drawDay();
 
         $('body').on('mousewheel', function(event, delta){
             event.preventDefault();
@@ -487,7 +538,13 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
         });
 
         $('#rotateContainer').on('mousemove', function(event){
-            console.log(event);
+            //console.log(event);
+        });
+
+        $('.mouseDay path').on('mouseenter', function(event){
+            var day = $(event.currentTarget).data('day');
+            selectedDay = day;
+            drawDay();
         });
 
     }

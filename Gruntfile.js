@@ -180,7 +180,10 @@ module.exports = function( grunt ) {
 
     min: {
       dist: ''
-    }
+    } ,
+      server: {
+          port: 3502
+      }
   });
 
   // Alias the `test` task to run the `mocha` task instead

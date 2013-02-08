@@ -1,5 +1,26 @@
 @import "compass_twitter_bootstrap";
 
+
+@font-face {
+  font-family: 'LeagueGothicRegular';
+  src: url('../fonts/League_Gothic-webfont.eot');
+  src: url('../fonts/League_Gothic-webfont.eot?#iefix') format('embedded-opentype'),
+  url('../fonts/League_Gothic-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TypoSlabserifLightRegular';
+  src: url('../fonts/TypoSlabserif-Light-webfont.eot');
+  src: url('../fonts/TypoSlabserif-Light-webfont.eot?#iefix') format('embedded-opentype'),
+  url('../fonts/TypoSlabserif-Light-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+
 body {
   font-family: "Bell MT";
   //font-style: italic;
@@ -15,6 +36,7 @@ g.grow path {
 }
 
 g.frostLabel text {
+  font-family: 'TypoSlabserifLightRegular';
   font-size: 16pt;
   fill: #82b966;
 }
@@ -25,12 +47,14 @@ g.day text, g.moon text {
 }
 
 text.monthLabel {
+  font-family: 'TypoSlabserifLightRegular';
  font-size: 15pt;
+  fill: rgb(105, 105, 105);
 }
 
 g.monthArc path {
-  fill: #fff;
-  stroke: #E9E9E9;
+  fill: rgb(206, 206, 206);
+  stroke: #FFF;
 }
 
 path.seasonArc {
@@ -39,26 +63,48 @@ path.seasonArc {
 }
 
 path#Summer {
-  fill: #F9B5B5;
+  fill: rgb(247, 208, 14);
+}
+
+text#SummerLabel{
+  fill: rgb(179, 136, 17);
 }
 
 path#Spring {
-  fill: #D0FFB8;
+  fill: rgb(174, 201, 55);
+}
+
+text#SpringLabel{
+  fill: rgb(127, 151, 38);
 }
 
 path#Fall {
-  fill: #FAE2B7;
+  fill: rgb(234, 101, 68);
+}
+
+
+text#FallLabel{
+  fill: rgb(154, 66, 40);
 }
 
 path#Winter {
-  fill: #BAD7FD;
+  fill: rgb(124, 180, 192);
+}
+
+text#WinterLabel{
+  fill: rgb(81, 122, 131);
 }
 
 text.seasonLabel {
+  font-family: 'TypoSlabserifLightRegular';
   font-size: 15pt;
 }
 
-g.day text.Sunday, g.day text.Saturday {
+g.day circle {
+  fill: rgb(206, 206, 206)
+}
+
+g.day circle.Sunday, g.day circle.Saturday {
   fill: #F90;
 }
 
@@ -102,6 +148,18 @@ g.precip rect {
 
 g.snow rect {
   fill: #65DAF4;
+}
+
+g.mouseDay path {
+  opacity: 0;
+}
+g.mouseDay path:hover {
+  opacity: .15;
+}
+
+
+#selectedDay {
+  font-family: LeagueGothicRegular;
 }
 
 
