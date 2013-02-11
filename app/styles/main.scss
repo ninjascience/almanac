@@ -158,8 +158,20 @@ g.mouseDay path:hover {
 }
 
 
-#selectedDay {
+.selectedDate text {
   font-family: LeagueGothicRegular;
+  line-height: 40pt;
+  font-size: 40pt;
+  color: black;
+  text-anchor: end;
+}
+
+.dayOfWeek text {
+  font-family: LeagueGothicRegular;
+  line-height: 30pt;
+  font-size: 30pt;
+  color: black;
+  text-anchor: end;
 }
 
 
