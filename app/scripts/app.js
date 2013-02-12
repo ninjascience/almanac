@@ -7,25 +7,6 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
         return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
     }
 
-//    var tempColors = [
-//        //{zone: '3a', minTemp: -40, color: 0xE2A2D7},
-//        //{zone: '3b', minTemp: -35, color: 0xBFACE3},
-//        //{zone: '4a', minTemp: -30, color: 0x96B5E5},
-//        //{zone: '4b', minTemp: -25, color: 0x6CBCDD},
-//        //{zone: '5a', minTemp: -20, color: 0x49C0CC},
-//        //{zone: '5b', minTemp: -15, color: 0x3CC1B4},
-//        //{zone: '6a', minTemp: -10, color: 0x4DC098},
-//        //{zone: '6b', minTemp: -5, color: 0x68BD7C},
-//        {zone: '7a', minTemp: 0, color: "#85B862"},
-//        {zone: '7b', minTemp: 5, color: "#A1B04F"},
-//        {zone: '8a', minTemp: 10, color: "#BBA746"},
-//        {zone: '8b', minTemp: 15, color: "#D19C48"},
-//        {zone: '9a', minTemp: 20, color: "#E39054"},
-//        {zone: '9b', minTemp: 25, color: "#ED8667"},
-//        {zone: '10a', minTemp: 30, color: "#E39054"},
-//        {zone: '10b', minTemp: 35, color: "#ED8667"}
-//    ];
-
     var zoneColors2 = [
         {minTemp: 0, color: "#aad681"},
         {minTemp: 5, color: "#cbdb82"},
@@ -109,7 +90,7 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
 
     var padding = 10,
         innerRadius = 200,
-        seasonsWidth = 25,
+        seasonsWidth = 30,
         monthsWidth = 25,
         moonWidth = 10,
         precipWidth = 50,
@@ -270,7 +251,7 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             .attr("text-anchor", "middle")
             .append('textPath')
             .attr('startOffset', '25%')
-            .attr('baseline-shift', '25%')
+            .attr('baseline-shift', '45%')
             .attr('xlink:href', function(d){
                 return '#' + d.name;
             })
@@ -509,9 +490,12 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
 
             var padding = 10;
 
-            dayDetail.select('g.selectedDate').remove();
-            dayDetail.select('g.dayOfWeek').remove();
-            dayDetail.select('rect.temp').remove();
+            dayDetail.selectAll('g.selectedDate').remove();
+            dayDetail.selectAll('g.dayOfWeek').remove();
+            dayDetail.selectAll('rect.temp').remove();
+            dayDetail.selectAll('circle.maxTemp').remove();
+            dayDetail.selectAll('circle.minTemp').remove();
+            dayDetail.selectAll('g.dayTempLabels').remove();
 
             // Selected Date
             var selectedDate = dayDetail.selectAll('g.selectedDate').data([days[selectedDay]]).enter()
@@ -526,11 +510,11 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             selectedDate.attr('x', dayDetailSide);
 
             // Day of Week
-            var dayOfWeek = dayDetail.selectAll('g.dayOfWeek').data([stats[selectedDay]]).enter()
+            var dayOfWeek = dayDetail.selectAll('g.dayOfWeek').data([days[selectedDay]]).enter()
                 .append('g').attr('class', 'dayOfWeek')
-                .append('text').text(function(d){
-                    return d.TMIN + ' / ' + d.TMAX;
-                    //return daysOfWeek(d.date.getDay());
+                .append('text').attr('id', 'dayOfWeek')
+                .text(function(d){
+                    return daysOfWeek(d.date.getDay());
                 });
 
             var dayOfWeekBBox = dayOfWeek.node().getBBox();
@@ -556,27 +540,31 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
                         return "translate(20," + (dayDetailSide - detailTempScale(d.TMAX) + tempHeight) + ")";
                 });
 
-//            dayClipPath.selectAll("circle.maxTemp").data(stats)
-//                .enter()
-//                .append('circle').attr('class', 'maxTemp')
-//                .attr('r', 1.5)
-//                .attr("transform", function (d, i) {
-//                    var date = new Date(today.getFullYear(), d.MO-1, d.DY, 0, 0, 0, 0);
-//                    return "rotate(" + yearArc(date.getTime()+(millisecondsInDay/2)) + ")" +
-//                        "translate(" + (innerTempRadius + tempScale(d['TMAX-MAX'])) + ")";
-//                });
-//
-//            dayClipPath.selectAll("circle.minTemp").data(stats)
-//                .enter()
-//                .append('circle').attr('class', 'minTemp')
-//                .attr('r', 1.5)
-//                .attr("transform", function (d, i) {
-//                    var date = new Date(today.getFullYear(), d.MO-1, d.DY, 0, 0, 0, 0);
-//                    return "rotate(" + yearArc(date.getTime()+(millisecondsInDay/2)) + ")" +
-//                        "translate(" + (innerTempRadius + tempScale(d['TMIN-MIN'])) + ")";
-//                });
+            dayClipPath.selectAll("circle.maxTemp").data([stats[selectedDay]])
+                .enter()
+                .append('circle').attr('class', 'maxTemp')
+                .attr('r', 5)
+                .attr("transform", function (d, i) {
+                    return "translate(25," + (dayDetailSide - detailTempScale(d['TMAX-MAX']) + tempHeight) + ")";
+                });
 
+            dayClipPath.selectAll("circle.minTemp").data([stats[selectedDay]])
+                .enter()
+                .append('circle').attr('class', 'minTemp')
+                .attr('r', 5)
+                .attr("transform", function (d, i) {
+                    return "translate(25," + (dayDetailSide - detailTempScale(d['TMIN-MIN']) + tempHeight) + ")";
+                });
 
+            dayDetail.selectAll('g.dayTempGrays').data(tempColors2).enter()
+                .append('g').attr('class', 'dayTempGrays')
+                .append('rect')
+                .attr('width', 10)
+                .attr('height', tempHeight)
+                .attr('x', 20)
+                .attr('y', function(d){
+                    return dayDetailSide - detailTempScale(d.minTemp);
+                });
             dayDetail.selectAll('g.dayTempColors').data(tempColors2).enter()
                 .append('g').attr('class', 'dayTempColors')
                 .append('rect')
@@ -590,15 +578,17 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
                 .attr('y', function(d){
                     return dayDetailSide - detailTempScale(d.minTemp);
                 });
-            dayDetail.selectAll('g.dayTempLabels').data(tempColors2).enter()
+            var selectedDayStats = stats[selectedDay];
+            var selectedDayTemps = [selectedDayStats['TMIN-MIN'],selectedDayStats['TMIN'],selectedDayStats['TMAX'],selectedDayStats['TMAX-MAX']];
+            dayDetail.selectAll('g.dayTempLabels').data(selectedDayTemps).enter()
                 .append('g').attr('class', 'dayTempLabels')
                 .append('text')
                 .text(function(d) {
-                    return d.minTemp;
+                    return d;
                 })
                 .attr('x', 34)
                 .attr('y', function(d){
-                    return dayDetailSide - detailTempScale(d.minTemp) + tempHeight + (tempHeight/2);
+                    return dayDetailSide - detailTempScale(d) + tempHeight + (tempHeight/2);
                 });
 
         };

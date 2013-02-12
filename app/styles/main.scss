@@ -22,8 +22,16 @@
 
 
 body {
-  font-family: "Bell MT";
-  //font-style: italic;
+  font-family: 'Sanchez', serif;
+  background: #ffffff; /* Old browsers */
+  background: -moz-radial-gradient(center, ellipse cover,  #ffffff 0%, #f9f8f3 100%); /* FF3.6+ */
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#ffffff), color-stop(100%,#f9f8f3)); /* Chrome,Safari4+ */
+  background: -webkit-radial-gradient(center, ellipse cover,  #ffffff 0%,#f9f8f3 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-radial-gradient(center, ellipse cover,  #ffffff 0%,#f9f8f3 100%); /* Opera 12+ */
+  background: -ms-radial-gradient(center, ellipse cover,  #ffffff 0%,#f9f8f3 100%); /* IE10+ */
+  background: radial-gradient(ellipse at center,  #ffffff 0%,#f9f8f3 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f9f8f3',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
 }
 
 path{
@@ -36,7 +44,7 @@ g.grow path {
 }
 
 g.frostLabel text {
-  font-family: 'TypoSlabserifLightRegular';
+  font-family: 'Sanchez', serif;
   font-size: 16pt;
   fill: #82b966;
 }
@@ -47,7 +55,7 @@ g.day text, g.moon text {
 }
 
 text.monthLabel {
-  font-family: 'TypoSlabserifLightRegular';
+  font-family: 'Sanchez', serif;
  font-size: 15pt;
   fill: rgb(105, 105, 105);
 }
@@ -96,7 +104,7 @@ text#WinterLabel{
 }
 
 text.seasonLabel {
-  font-family: 'TypoSlabserifLightRegular';
+  font-family: 'Sanchez', serif;
   font-size: 15pt;
 }
 
@@ -166,7 +174,7 @@ g.mouseDay path:hover {
   text-anchor: end;
 }
 
-.dayOfWeek text {
+text#dayOfWeek {
   font-family: LeagueGothicRegular;
   line-height: 30pt;
   font-size: 30pt;
@@ -175,3 +183,6 @@ g.mouseDay path:hover {
 }
 
 
+g.dayTempGrays rect {
+  fill: rgb(241, 240, 235);
+}
