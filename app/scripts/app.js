@@ -482,10 +482,117 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             .attr('width', dayDetailSide)
             .attr('height', dayDetailSide);
 
+        var tempHeight = dayDetailSide / (tempColors2.length);
+
+        var detailTempScale = d3.scale.linear()
+            .domain([0, maxTemp-minTemp])
+            .range([0,dayDetailSide - (tempHeight)]);
+
+        // Legend
+        var legend = d3.select('#legendViz').append('svg').append('g');
+        var sampleDay = 200;
+
         // temperature clip path
-        var dayClipPath = dayDetail.append("defs").append('clipPath').attr('id', 'detailTempMarks')
+        var legendClipPath = legend.append("defs").append('clipPath').attr('id', 'legendTempMarks');
+
+        legend.selectAll('g.legendTempColors').data(tempColors2).enter()
+            .append('g').attr('class', 'legendTempColors')
+            .append('rect')
+            .attr('fill', function(d){
+                return d.color;
+            })
+            .attr('width', 10)
+            .attr('height', tempHeight)
+            .attr('x', 20)
+            .attr('y', function(d){
+                return dayDetailSide - detailTempScale(d.minTemp);
+            });
+
+        legend.selectAll('g.legendTempLabels').data(tempColors2).enter()
+            .append('g').attr('class', 'legendTempLabels')
+            .append('text')
+            .text(function(d) {
+                return (d.minTemp % 10)? '' : d.minTemp;
+            })
+            .attr('x', 34)
+            .attr('y', function(d){
+                return dayDetailSide - detailTempScale(d.minTemp) + tempHeight + (tempHeight/2);
+            });
+
+        legendClipPath.selectAll("rect.temp").data([stats[sampleDay]])
+            .enter()
+            .append('rect').attr('class', 'temp')
+            .attr('width', 10)
+            .attr('height', function(d){ return detailTempScale((d.TMAX- d.TMIN));})
+            .attr("transform", function (d, i) {
+                return "translate(60," + (dayDetailSide - detailTempScale(d.TMAX) + tempHeight) + ")";
+            });
+
+        legendClipPath.selectAll("circle.maxTemp").data([stats[sampleDay]])
+            .enter()
+            .append('circle').attr('class', 'maxTemp')
+            .attr('r', 5)
+            .attr("transform", function (d, i) {
+                return "translate(65," + (dayDetailSide - detailTempScale(d['TMAX-MAX']) + tempHeight) + ")";
+            });
+
+        legendClipPath.selectAll("circle.minTemp").data([stats[sampleDay]])
+            .enter()
+            .append('circle').attr('class', 'minTemp')
+            .attr('r', 5)
+            .attr("transform", function (d, i) {
+                return "translate(65," + (dayDetailSide - detailTempScale(d['TMIN-MIN']) + tempHeight) + ")";
+            });
+
+        legend.selectAll('g.dayTempGrays').data(tempColors2).enter()
+            .append('g').attr('class', 'dayTempGrays')
+            .append('rect')
+            .attr('x', 60)
+            .attr('width', 10)
+            .attr('height', tempHeight)
+            .attr('y', function(d){
+                return dayDetailSide - detailTempScale(d.minTemp);
+            });
+
+        legend.selectAll('g.dayTempColors').data(tempColors2).enter()
+            .append('g').attr('class', 'dayTempColors')
+            .append('rect')
+            .attr('x', 60)
+            .attr('style', 'clip-path: url(#legendTempMarks);')
+            .attr('fill', function(d){
+                return d.color;
+            })
+            .attr('width', 10)
+            .attr('height', tempHeight)
+            .attr('y', function(d){
+                return dayDetailSide - detailTempScale(d.minTemp);
+            });
+
+        var legendDayTemps = [
+            {label: 'Historical Min', temp:stats[sampleDay]['TMIN-MIN']},
+            {label: 'Average Min', temp:stats[sampleDay]['TMIN']},
+            {label: 'Average Max', temp:stats[sampleDay]['TMAX']},
+            {label: 'Historical Max', temp:stats[sampleDay]['TMAX-MAX']}
+        ];
+        legend.selectAll('g.dayTempLabels').data(legendDayTemps).enter()
+            .append('g').attr('class', 'dayTempLabels')
+            .append('text')
+            .text(function(d) {
+                return d.label;
+            })
+            .attr('x', 75)
+            .attr('y', function(d){
+                return dayDetailSide - detailTempScale(d.temp) + tempHeight + (tempHeight/2);
+            });
+
+        // Day Detail Viz
 
         var selectedDay = 0;
+
+
+        // temperature clip path
+        var dayClipPath = dayDetail.append("defs").append('clipPath').attr('id', 'detailTempMarks');
+
         var drawDay = function() {
 
             var padding = 10;
@@ -498,6 +605,8 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             dayDetail.selectAll('g.dayTempLabels').remove();
             dayDetail.selectAll('g.dayRain').remove();
             dayDetail.selectAll('g.daySnow').remove();
+            dayDetail.selectAll('g.rainLabel').remove();
+            dayDetail.selectAll('g.snowLabel').remove();
 
             // Selected Date
             var selectedDate = dayDetail.selectAll('g.selectedDate').data([days[selectedDay]]).enter()
@@ -526,12 +635,6 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             dayOfWeek.attr('x', dayDetailSide);
 
             // Temperatures
-            var tempHeight = dayDetailSide / (tempColors2.length);
-
-            var detailTempScale = d3.scale.linear()
-                .domain([0, maxTemp-minTemp])
-                .range([0,dayDetailSide - (tempHeight)]);
-
 
             dayClipPath.selectAll("rect.temp").data([stats[selectedDay]])
                 .enter()
@@ -596,7 +699,6 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             var detailPrecipScale = d3.scale.linear()
                 .domain(d3.extent(stats,
                     function(d){
-                        console.log('rain: ' + d.PRECIP + ', snow: ' + d.SNOW);
                         return Number(d.PRECIP) + Number(d.SNOW);
                     }))
                 .range([0,dayDetailSide]);
@@ -613,7 +715,6 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
                     return detailPrecipScale(d.PRECIP);
                 });
 
-
             dayDetail.selectAll('g.daySnow').data([stats[selectedDay]]).enter()
                 .append('g').attr('class', 'daySnow snow')
                 .append('rect')
@@ -624,6 +725,28 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
                 .attr('width', 10)
                 .attr('height', function(d){
                     return detailPrecipScale(d.SNOW) || 0;
+                });
+
+            dayDetail.selectAll('g.rainLabel').data([stats[selectedDay]]).enter()
+                .append('g').attr('class', 'rainLabel')
+                .append('text')
+                .attr('x', 75)
+                .attr('y', function(d){
+                    return dayDetailSide - detailPrecipScale(d.PRECIP) + tempHeight;
+                })
+                .text(function(d){
+                    return d.PRECIP;
+                });
+
+            dayDetail.selectAll('g.snowLabel').data([stats[selectedDay]]).enter()
+                .append('g').attr('class', 'snowLabel')
+                .append('text')
+                .attr('x', 75)
+                .attr('y', function(d){
+                    return dayDetailSide - detailPrecipScale(d.PRECIP) - detailPrecipScale(d.SNOW) + tempHeight;
+                })
+                .text(function(d){
+                    return d.SNOW;
                 });
 
         };
