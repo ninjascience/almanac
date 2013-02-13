@@ -291,21 +291,21 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             });
 
         // Moon marks
-        var moonInnerRadius = monthsInnerRadius + monthsWidth + padding;
-        g.append("g").attr('class', 'phases').selectAll("g.moon").data(phases)
-            .enter().append('g').attr('class', 'moon')
-            .attr("transform", function (d, i) {
-                return "rotate(" + (yearArc(d.date.getTime()+millisecondsInDay)) + ")" +
-                    "translate(" + moonInnerRadius + ")";
-
-            })
-            .append('path').attr("d", d3.svg.symbol())
-            .attr('class', function(d){
-                return phasesOfMoon(d.phase);
-            });
+//        var moonInnerRadius = monthsInnerRadius + monthsWidth + padding;
+//        g.append("g").attr('class', 'phases').selectAll("g.moon").data(phases)
+//            .enter().append('g').attr('class', 'moon')
+//            .attr("transform", function (d, i) {
+//                return "rotate(" + (yearArc(d.date.getTime()+millisecondsInDay)) + ")" +
+//                    "translate(" + moonInnerRadius + ")";
+//
+//            })
+//            .append('path').attr("d", d3.svg.symbol())
+//            .attr('class', function(d){
+//                return phasesOfMoon(d.phase);
+//            });
 
         // day marks
-        var daysInnerRadius = moonInnerRadius + moonWidth + padding;
+        var daysInnerRadius = monthsInnerRadius + monthsWidth + padding;
         g.append("g").attr('class', 'days').selectAll("g.day").data(days)
             .enter().append('g').attr('class', 'day')
             .attr("transform", function (d, i) {
@@ -496,6 +496,8 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             dayDetail.selectAll('circle.maxTemp').remove();
             dayDetail.selectAll('circle.minTemp').remove();
             dayDetail.selectAll('g.dayTempLabels').remove();
+            dayDetail.selectAll('g.dayRain').remove();
+            dayDetail.selectAll('g.daySnow').remove();
 
             // Selected Date
             var selectedDate = dayDetail.selectAll('g.selectedDate').data([days[selectedDay]]).enter()
@@ -589,6 +591,39 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
                 .attr('x', 34)
                 .attr('y', function(d){
                     return dayDetailSide - detailTempScale(d) + tempHeight + (tempHeight/2);
+                });
+
+            var detailPrecipScale = d3.scale.linear()
+                .domain(d3.extent(stats,
+                    function(d){
+                        console.log('rain: ' + d.PRECIP + ', snow: ' + d.SNOW);
+                        return Number(d.PRECIP) + Number(d.SNOW);
+                    }))
+                .range([0,dayDetailSide]);
+
+            dayDetail.selectAll('g.dayRain').data([stats[selectedDay]]).enter()
+                .append('g').attr('class', 'dayRain precip')
+                .append('rect')
+                .attr('x', 60)
+                .attr('y', function(d){
+                    return dayDetailSide - detailPrecipScale(d.PRECIP) + tempHeight;
+                })
+                .attr('width', 10)
+                .attr('height', function(d){
+                    return detailPrecipScale(d.PRECIP);
+                });
+
+
+            dayDetail.selectAll('g.daySnow').data([stats[selectedDay]]).enter()
+                .append('g').attr('class', 'daySnow snow')
+                .append('rect')
+                .attr('x', 60)
+                .attr('y', function(d){
+                    return dayDetailSide - detailPrecipScale(d.PRECIP) - detailPrecipScale(d.SNOW) + tempHeight;
+                })
+                .attr('width', 10)
+                .attr('height', function(d){
+                    return detailPrecipScale(d.SNOW) || 0;
                 });
 
         };
