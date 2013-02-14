@@ -20,6 +20,13 @@
 
 }
 
+@font-face {
+  font-family: 'Sanchez';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Sanchez'), local('Sanchez-Regular'), url(../fonts/Sanchez.woff) format('woff');
+}
+
 
 body {
   font-family: 'Sanchez', serif;
@@ -33,6 +40,7 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f9f8f3',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
 }
+
 
 path{
   shape-rendering:geometricPrecision;
@@ -146,7 +154,14 @@ path.first_quarter, path.last_quarter {
   position: absolute;
   top: 5px;
   left: 5px;
-  width: 315px;
+  width: 400px;
+}
+
+
+#legend h1 {
+  font-family: 'LeagueGothicRegular';
+  font-size: 52px;
+  font-weight: normal;
 }
 
 g.precip rect {

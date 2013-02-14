@@ -769,6 +769,24 @@ define(['d3','underscore', 'mousewheel'], function(d3,_) {
             rotateContainer.attr('transform', 'rotate(' + (rotation) + ')scale(' + (scale) + ')');
         });
 
+        var oldOffset = null;
+        var zoomDefault = 'rotate(-90)scale(1.0500000000000005)';
+        var zoomIn = 'rotate(-90)scale(3.0500000000000005)';
+
+        $('body').on('click', function(event){
+           if(event.shiftKey) {
+                if(!oldOffset){
+                    oldOffset =  $('#offsetContainer').attr('transform');
+                    $('#offsetContainer').attr('transform', 'translate(632.5,-1065)');
+                    $('#rotateContainer').attr('transform', zoomIn);
+                } else {
+                    $('#offsetContainer').attr('transform', oldOffset);
+                    $('#rotateContainer').attr('transform', zoomDefault);
+                    oldOffset = null;
+                }
+           }
+        });
+
         $('#rotateContainer').on('mousemove', function(event){
             //console.log(event);
         });
