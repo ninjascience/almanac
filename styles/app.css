@@ -122,6 +122,14 @@ g.day circle.Sunday, g.day circle.Saturday {
     fill: #F90;
 }
 
+g.sunrise rect {
+    fill: #f7d00e;
+}
+
+g.night rect {
+    fill: #000341;
+}
+
 g.month rect, g.season rect {
     fill: #666;
     stroke-width: 0;

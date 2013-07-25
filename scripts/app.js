@@ -97,6 +97,7 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
         monthsWidth = 25,
         moonWidth = 10,
         precipWidth = 50,
+        sunriseWidth = 30,
         tempWidth = 100;
 
     // Days of the Week mapped to integers
@@ -125,7 +126,6 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
 //        .range([-Math.PI, Math.PI]);
 
     var days = [],
-        sunrise = [],
         months = [],
         weeklyZones = null,
         phases = null,
@@ -139,10 +139,7 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
         draw();
     });
 
-    d3.csv('data/sunrise.csv', function (result) {
-        sunrise = result;
-        draw();
-    });
+    var minutesInDay = 24*60;
 
     d3.csv('data/97008.csv', function (result) {
         stats = result;
@@ -165,6 +162,15 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
                 currentWeek.total += Number(stats[i]['TMIN-MIN']);
                 currentWeek.days += 1;
             }
+            var toMinutes = function(time){
+                var parsed = time.split(':');
+                var hours = Number(parsed[0]);
+                var minutes = Number(parsed[1]);
+                return (hours * 60) + minutes;
+            };
+            stats[i]['SUNRISE'] = toMinutes(stats[i]['SUNRISE']);
+            stats[i]['SUNSET'] = toMinutes(stats[i]['SUNSET']);
+
         }
         currentWeek.average = currentWeek.total / currentWeek.days;
         draw();
@@ -202,12 +208,15 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
         .domain([0, millisecondsInDay * days.length])
         .range(angles);
 
+
+
+
     draw();
 
     var scale = 1.0;
 
     function draw() {
-        if (!stats || !days || !events || !months || !phases || !sunrise) return;
+        if (!stats || !days || !events || !months || !phases ) return;
 
         d3.select('#viz').innerHTML = '';
 
@@ -328,6 +337,35 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
                 return daysOfWeek(d.date.getDay());
             });
 
+        // sunrise/sunet marks
+        var minutesScale = d3.scale.linear()
+            .domain([0, minutesInDay])
+            .range([0, sunriseWidth]);
+
+        var minutesInnerRadius = daysInnerRadius + padding;
+        g.append("g").attr('class', 'nights').selectAll("g.night").data(stats)
+            .enter().append('g').attr('class', 'night')
+            .append('rect')
+            .attr('width', sunriseWidth)
+            .attr('height', 2)
+            .attr("transform", function (d, i) {
+                var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
+                return "rotate(" + yearArc(date.getTime()+ (millisecondsInDay/4))  + ")" +
+                    "translate(" + (minutesInnerRadius) + ")";
+            });
+        g.append("g").attr('class', 'sunrises').selectAll("g.sunrise").data(stats)
+            .enter().append('g').attr('class', 'sunrise')
+            .append('rect')
+            .attr('width', function (d) {
+                return minutesScale(d.SUNSET - d.SUNRISE);
+            })
+            .attr('height', 4)
+            .attr("transform", function (d, i) {
+                var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
+                return "rotate(" + yearArc(date.getTime()) + ")" +
+                    "translate(" + (minutesInnerRadius + minutesScale(d.SUNRISE)) + ")";
+            });
+
         // precipitation marks
         var precipScale = d3.scale.linear()
             .domain(d3.extent(stats, function (d) {
@@ -335,7 +373,7 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
             }))
             .range([0, precipWidth]);
 
-        var precipInnerRadius = daysInnerRadius + (padding * 2);
+        var precipInnerRadius = minutesInnerRadius + sunriseWidth + (padding );
         g.append("g").attr('class', 'precipation').selectAll("g.precip").data(stats)
             .enter().append('g').attr('class', 'precip')
             .append('rect')
