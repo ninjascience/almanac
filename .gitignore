@@ -1,12 +1,5 @@
-temp
+node_modules
 dist
-.DS_STORE
-.sass-cache/
-components/
-package.json
-test/
-*.iml
-*.ipr
-*.iws
-npm-debug.log
-
+.tmp
+.sass-cache
+app/bower_components
