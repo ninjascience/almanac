@@ -1,4 +1,4 @@
-define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
+define(['d3', 'underscore', 'jquery'], function (d3, _, $) {
     "use strict";
 
     function pad(n, width, z) {
@@ -89,7 +89,7 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
         {minTemp: 105, color: "#B20000"}
     ];
 
-    var body = $('body');
+    var body = $(window);
 
     var padding = 10,
         innerRadius = 200,
@@ -140,6 +140,8 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
     });
 
     var minutesInDay = 24*60;
+
+    var scale = 1.0;
 
     d3.csv('data/97008.csv', function (result) {
         stats = result;
@@ -212,12 +214,9 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
         .domain([0, millisecondsInDay * days.length])
         .range(angles);
 
-
-
-
-    draw();
-
-    var scale = 1.0;
+    $(function(){
+        draw();
+    });
 
     function draw() {
         if (!stats || !days || !events || !months || !phases ) return;
@@ -230,7 +229,7 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
             .attr("height", body.outerHeight())
             .append("g").attr('id', 'offsetContainer')
             .append("g").attr('id', 'rotateContainer')
-            .attr("transform", "rotate(-90)scale(" + scale + ")");
+            .attr("transform", "rotate(-90)scale(1)");
 
         // season mark
         g.append('defs').selectAll('path.seasonArc').data(events.seasons)
@@ -342,76 +341,76 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
             });
 
         // sunrise/sunet marks
-        var minutesScale = d3.scale.linear()
-            .domain([0, minutesInDay])
-            .range([0, sunriseWidth]);
+        // var minutesScale = d3.scale.linear()
+        //     .domain([0, minutesInDay])
+        //     .range([0, sunriseWidth]);
 
-        var minutesInnerRadius = daysInnerRadius + padding;
-        // AM Night
-        g.append("g").attr('class', 'nights').selectAll("g.night").data(stats)
-            .enter().append('g').attr('class', 'night')
-            .append('rect')
-            .attr('width', function (d) {
-                return minutesScale(d.ADAWN);
-            })
-            .attr('height', 4)
-            .attr("transform", function (d, i) {
-                var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
-                return "rotate(" + yearArc(date.getTime())  + ")" +
-                    "translate(" + (minutesInnerRadius) + ")";
-            });
-        // Dawn
-        g.append("g").attr('class', 'twilight').selectAll("g.twilight").data(stats)
-            .enter().append('g').attr('class', 'twilight')
-            .append('rect')
-            .attr('width', function (d) {
-                return minutesScale(d.SUNRISE - d.ADAWN);
-            })
-            .attr('height', 4)
-            .attr("transform", function (d, i) {
-                var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
-                return "rotate(" + yearArc(date.getTime()) + ")" +
-                    "translate(" + (minutesInnerRadius + minutesScale(d.ADAWN)) + ")";
-            });
-        // Day
-        g.append("g").attr('class', 'sunrises').selectAll("g.sunrise").data(stats)
-            .enter().append('g').attr('class', 'sunrise')
-            .append('rect')
-            .attr('width', function (d) {
-                return minutesScale(d.SUNSET - d.SUNRISE);
-            })
-            .attr('height', 4)
-            .attr("transform", function (d, i) {
-                var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
-                return "rotate(" + yearArc(date.getTime()) + ")" +
-                    "translate(" + (minutesInnerRadius + minutesScale(d.SUNRISE)) + ")";
-            });
-        // Dusk
-        g.append("g").attr('class', 'twilight').selectAll("g.twilight").data(stats)
-            .enter().append('g').attr('class', 'twilight')
-            .append('rect')
-            .attr('width', function (d) {
-                return minutesScale(d.ADUSK - d.SUNSET);
-            })
-            .attr('height', 4)
-            .attr("transform", function (d, i) {
-                var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
-                return "rotate(" + yearArc(date.getTime()) + ")" +
-                    "translate(" + (minutesInnerRadius + minutesScale(d.SUNSET)) + ")";
-            });
-        // PM Night
-        g.append("g").attr('class', 'nights').selectAll("g.night").data(stats)
-            .enter().append('g').attr('class', 'night')
-            .append('rect')
-            .attr('width', function (d) {
-                return minutesScale(minutesInDay - d.ADUSK);
-            })
-            .attr('height', 4)
-            .attr("transform", function (d, i) {
-                var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
-                return "rotate(" + yearArc(date.getTime())  + ")" +
-                    "translate(" + (minutesInnerRadius + minutesScale(d.ADUSK)) + ")";
-            });
+        // var minutesInnerRadius = daysInnerRadius + padding;
+        // // AM Night
+        // g.append("g").attr('class', 'nights').selectAll("g.night").data(stats)
+        //     .enter().append('g').attr('class', 'night')
+        //     .append('rect')
+        //     .attr('width', function (d) {
+        //         return minutesScale(d.ADAWN);
+        //     })
+        //     .attr('height', 4)
+        //     .attr("transform", function (d, i) {
+        //         var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
+        //         return "rotate(" + yearArc(date.getTime())  + ")" +
+        //             "translate(" + (minutesInnerRadius) + ")";
+        //     });
+        // // Dawn
+        // g.append("g").attr('class', 'twilight').selectAll("g.twilight").data(stats)
+        //     .enter().append('g').attr('class', 'twilight')
+        //     .append('rect')
+        //     .attr('width', function (d) {
+        //         return minutesScale(d.SUNRISE - d.ADAWN);
+        //     })
+        //     .attr('height', 4)
+        //     .attr("transform", function (d, i) {
+        //         var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
+        //         return "rotate(" + yearArc(date.getTime()) + ")" +
+        //             "translate(" + (minutesInnerRadius + minutesScale(d.ADAWN)) + ")";
+        //     });
+        // // Day
+        // g.append("g").attr('class', 'sunrises').selectAll("g.sunrise").data(stats)
+        //     .enter().append('g').attr('class', 'sunrise')
+        //     .append('rect')
+        //     .attr('width', function (d) {
+        //         return minutesScale(d.SUNSET - d.SUNRISE);
+        //     })
+        //     .attr('height', 4)
+        //     .attr("transform", function (d, i) {
+        //         var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
+        //         return "rotate(" + yearArc(date.getTime()) + ")" +
+        //             "translate(" + (minutesInnerRadius + minutesScale(d.SUNRISE)) + ")";
+        //     });
+        // // Dusk
+        // g.append("g").attr('class', 'twilight').selectAll("g.twilight").data(stats)
+        //     .enter().append('g').attr('class', 'twilight')
+        //     .append('rect')
+        //     .attr('width', function (d) {
+        //         return minutesScale(d.ADUSK - d.SUNSET);
+        //     })
+        //     .attr('height', 4)
+        //     .attr("transform", function (d, i) {
+        //         var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
+        //         return "rotate(" + yearArc(date.getTime()) + ")" +
+        //             "translate(" + (minutesInnerRadius + minutesScale(d.SUNSET)) + ")";
+        //     });
+        // // PM Night
+        // g.append("g").attr('class', 'nights').selectAll("g.night").data(stats)
+        //     .enter().append('g').attr('class', 'night')
+        //     .append('rect')
+        //     .attr('width', function (d) {
+        //         return minutesScale(minutesInDay - d.ADUSK);
+        //     })
+        //     .attr('height', 4)
+        //     .attr("transform", function (d, i) {
+        //         var date = new Date(today.getFullYear(), d.MO - 1, d.DY);
+        //         return "rotate(" + yearArc(date.getTime())  + ")" +
+        //             "translate(" + (minutesInnerRadius + minutesScale(d.ADUSK)) + ")";
+        //     });
 
         // precipitation marks
         var precipScale = d3.scale.linear()
@@ -420,7 +419,7 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
             }))
             .range([0, precipWidth]);
 
-        var precipInnerRadius = minutesInnerRadius + sunriseWidth + (padding );
+        var precipInnerRadius = daysInnerRadius + (padding );
         g.append("g").attr('class', 'precipation').selectAll("g.precip").data(stats)
             .enter().append('g').attr('class', 'precip')
             .append('rect')
@@ -595,7 +594,7 @@ define(['d3', 'underscore', 'mousewheel'], function (d3, _) {
             .range([0, dayDetailSide - (tempHeight)]);
 
         // Legend
-        var legend = d3.select('#legendViz').append('svg').append('g');
+        var legend = d3.select('#legendViz').append('svg').attr('height', 400).append('g');
         var sampleDay = 200;
 
         // temperature clip path

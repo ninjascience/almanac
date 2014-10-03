@@ -1,17 +1,24 @@
 require.config({
 
     paths:{
-        hm:'vendor/hm',
-        esprima:'vendor/esprima',
-        jquery:'vendor/jquery.min',
-        d3:'/components/d3/d3.v2',
-        underscore: '/components/underscore/underscore',
-        mousewheel: 'vendor/jquery.mousewheel'
+        jquery:'/bower_components/jquery/jquery',
+        d3:'/bower_components/d3/d3',
+        underscore: '/bower_components/underscore/underscore',
+        bootstrap: '/bower_components/bootstrap/dist/js/bootstrap'
     },
     shim:{
-        'mousewheel': ['jquery'],
         'd3':{exports:'d3'},
-        'underscore':{exports:'_'}
+        'underscore':{exports:'_'},
+        'bootstrap': {
+            'deps': [
+                'jquery'
+            ]
+        },
+        'app': {
+            'deps': [
+                'bootstrap'
+            ]
+        }
     }
 });
 
