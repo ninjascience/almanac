@@ -1,15 +1,21 @@
 {
-  "name": "radial_almanac",
+  "name": "almanac",
   "version": "0.5.0",
   "description": "Radial dataviz of historical weather.",
   "repository": "https://github.com/ninjascience/almanac.git",
   "homepage": "http://ninjascience.github.io/weather/",
   "author": "Ryan Miller <ninjascience@gmail.com>",
+  "private": true,
   "scripts": {
-    "start": "grunt server"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "d3": "^7",
+    "suncalc": "^1.9"
   },
   "devDependencies": {
-    "grunt-contrib-connect": "~0.3.0",
-    "grunt-contrib-sass": "~0.4.1"
+    "vite": "^5"
   }
 }

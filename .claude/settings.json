@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(npx --yes playwright screenshot --browser chromium \"http://localhost:5173\" /tmp/almanac-screenshot.png --wait-for-timeout 4000 --full-page)"
+    ]
+  }
+}

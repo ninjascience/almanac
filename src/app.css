@@ -1,0 +1,175 @@
+@font-face {
+    font-family: 'LeagueGothicRegular';
+    src: url("/fonts/League_Gothic-webfont.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TypoSlabserifLightRegular';
+    src: url("/fonts/TypoSlabserif-Light-webfont.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Sanchez';
+    font-style: normal;
+    font-weight: 400;
+    src: local("Sanchez"), local("Sanchez-Regular"), url("/fonts/Sanchez.woff") format("woff");
+}
+
+body {
+    font-family: 'Sanchez', serif;
+    background: radial-gradient(ellipse at center, white 0%, #f9f8f3 100%);
+    margin: 0;
+    overflow: hidden;
+}
+
+path {
+    shape-rendering: geometricPrecision;
+}
+
+g.grow path {
+    fill: #82b966;
+    stroke-opacity: 0;
+}
+
+g.frostLabel text {
+    font-family: 'Sanchez', serif;
+    font-size: 16pt;
+    fill: #82b966;
+}
+
+g.day text, g.moon text {
+    font-size: 4.5pt;
+    font-family: Helvetica;
+}
+
+text.monthLabel {
+    font-family: 'Sanchez', serif;
+    font-size: 15pt;
+    fill: dimgrey;
+}
+
+g.monthArc path {
+    fill: #cecece;
+    stroke: #FFF;
+}
+
+path.seasonArc {
+    fill: #FFF;
+    stroke: #FFF;
+}
+
+path#Summer { fill: #f7d00e; }
+text#SummerLabel { fill: #b38811; }
+
+path#Spring { fill: #aec937; }
+text#SpringLabel { fill: #7f9726; }
+
+path#Fall { fill: #ea6544; }
+text#FallLabel { fill: #9a4228; }
+
+path#Winter { fill: #7cb4c0; }
+text#WinterLabel { fill: #517a83; }
+
+text.seasonLabel {
+    font-family: 'Sanchez', serif;
+    font-size: 15pt;
+}
+
+g.day circle {
+    fill: #cecece;
+}
+
+g.day circle.Sunday, g.day circle.Saturday {
+    fill: #F90;
+}
+
+g.sunrise rect { fill: #75C9EA; }
+g.night rect { fill: #00204F; }
+g.twilight rect { fill: #3a749c; }
+
+g.month rect, g.season rect {
+    fill: #666;
+    stroke-width: 0;
+}
+
+g.axis circle {
+    stroke: #999;
+    fill-opacity: 0;
+}
+
+path.full_moon {
+    fill: #FFF;
+    stroke: #000;
+}
+
+path.new_moon {
+    fill: #000;
+    stroke: #000;
+}
+
+path.first_quarter, path.last_quarter {
+    fill: #FFF;
+    stroke: #FFF;
+}
+
+#legend {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 400px;
+}
+
+#legend h1 {
+    font-family: 'LeagueGothicRegular';
+    font-size: 52px;
+    font-weight: normal;
+    margin: 0 0 4px;
+}
+
+#legend p {
+    margin: 0 0 4px;
+    font-size: 13px;
+}
+
+#location-prompt {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+    display: none;
+}
+
+#location-label,
+#legendViz {
+    display: none;
+}
+
+g.precip rect { fill: #3B8B99; }
+g.snow rect { fill: #65DAF4; }
+
+/* Current-year overlay */
+g.currentTemp rect { fill: rgba(230, 140, 30, 0.55); }
+g.currentPrecip rect { fill: rgba(40, 120, 200, 0.6); }
+g.currentSnow rect { fill: rgba(101, 218, 244, 0.6); }
+
+g.mouseDay path { opacity: 0; }
+g.mouseDay path:hover { opacity: .15; }
+
+.selectedDate text {
+    font-family: LeagueGothicRegular;
+    font-size: 40pt;
+    color: black;
+    text-anchor: end;
+}
+
+text#dayOfWeek {
+    font-family: LeagueGothicRegular;
+    font-size: 30pt;
+    color: black;
+    text-anchor: end;
+}
+
+g.dayTempGrays rect { fill: #f1f0eb; }

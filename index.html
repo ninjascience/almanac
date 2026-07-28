@@ -1,38 +1,25 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-
-        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-        <link rel="stylesheet" href="styles/app.css">
-    </head>
-    <body>
-    <div class="container">
-
-    </div>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gardeners' Almanac</title>
+    <meta name="description" content="Historical weather patterns visualized as a circular almanac.">
+  </head>
+  <body>
     <div id="viz"></div>
     <div id="legend">
-        <h1>Gardeners' Almanac WIP</h1>
-        <p>Historical weather patterns for Portland, Oregon</p>
-        <p>Visualization Design and Programming by <a href="http://ninjascience.github.com/" target="_new">Ryan Miller</a></p>
-        <p>Graphic Design by <a href="http://jcohendesign.com/" target="_new">Jeremy Cohen</a></p>
-        <p></p>
-        <div id="legendViz"></div>
+      <h1 hidden>Gardeners' Almanac</h1>
+      <p id="location-label" hidden>Historical weather patterns</p>
+      <p hidden>
+        Visualization by <a href="http://ninjascience.github.com/" target="_blank" rel="noopener">Ryan Miller</a> ·
+        Graphic design by <a href="http://jcohendesign.com/" target="_blank" rel="noopener">Jeremy Cohen</a>
+      </p>
+      <div id="location-prompt" hidden>
+        <p>Location access denied. Using Portland, OR.</p>
+      </div>
+      <div id="legendViz"></div>
     </div>
-
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
-        <![endif]-->
-
-
-    <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
-    <script data-main="scripts/main" src="scripts/main.js"></script>
-</body>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
